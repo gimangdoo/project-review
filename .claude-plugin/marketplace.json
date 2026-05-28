@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/anthropics/claude-code/main/schemas/marketplace.json",
+  "name": "project-review-marketplace",
+  "owner": {
+    "name": "gimangdoo"
+  },
+  "plugins": [
+    {
+      "name": "project-review",
+      "source": "./plugins/project-review",
+      "description": "Multi-lane project review suite (16 lanes + 1 hub). Each lane targets a distinct review dimension (plan adherence, adversarial red-team, full audit, hallucinated artifact, scope creep, spec drift, failure mode, observability, perf/cost, breaking change, coupling, dep health, test strength, DX, harness meta, waste/yield). Cadence presets: after-task / after-feature / architecture. Designed to bolt into dharness via shared output schema (dharness-project/dharness-rating/review/{lane}/{date}.md) and trigger registry (workflow.review.{lane}).",
+      "version": "0.1.0",
+      "category": "review"
+    }
+  ]
+}
