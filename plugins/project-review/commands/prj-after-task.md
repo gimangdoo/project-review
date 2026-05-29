@@ -18,7 +18,7 @@ description: 매 task 직후 즉시 리뷰 — hallucination(L04) + scope-creep(
 cadence=after-task
 ```
 
-hub가 lane set 확정 → 병렬 실행 → `dharness-project/dharness-rating/review/{date}_after-task/` 박제.
+hub가 lane set 확정 → 병렬 실행 → `{review_out}/{date}_after-task/` 박제.
 
 ## 산출물 요약 우선순위
 1. critical/high finding (즉시 fix 권고)

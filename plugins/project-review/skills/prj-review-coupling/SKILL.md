@@ -19,7 +19,12 @@ description: "모듈 경계·결합도·layering 위반·circular import·leaky 
 
 ## Procedure
 1. **import 그래프 빌드**
-   - 언어별 도구 (madge·dependency-cruiser·pydeps·go list) 또는 grep 기반
+   - 언어별 도구 우선 호출 — JS/TS: `madge` 또는 `dependency-cruiser`, Python: `pydeps`, Go: `go list -m all`, Rust: `cargo modules`
+   - 도구 부재 fallback (필수):
+     1. `which <tool>` 또는 `npx <tool> --version` 으로 가용 점검
+     2. 미설치 시 grep 기반 import statement 정적 분석 — JS/TS: `^import .* from`, Python: `^(import|from) `, Go: `^import (`, Rust: `^use `
+     3. 그래프는 `{module: [imported_modules]}` dict로 인메모리 빌드 (외부 binary 0 의존)
+     4. finding frontmatter에 `tool_used: grep-fallback` 박제 — 정밀도 ↓ 명시
 2. **circular detection**
    - cycle 검출 → 모든 cycle enum
 3. **layer 위반 detection**
@@ -65,7 +70,7 @@ finding:
 ```
 
 ## 출력 박제
-`dharness-project/dharness-rating/review/{date}_{slug}/L11_coupling.md`
+`{review_out}/{date}_{slug}/L11_coupling.md`
 
 frontmatter:
 ```yaml

@@ -69,7 +69,7 @@ finding:
 ```
 
 ## 출력 박제
-`dharness-project/dharness-rating/review/{date}_{slug}/L07_failure-mode.md`
+`{review_out}/{date}_{slug}/L07_failure-mode.md`
 
 frontmatter:
 ```yaml

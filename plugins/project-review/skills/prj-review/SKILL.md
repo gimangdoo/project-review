@@ -1,6 +1,6 @@
 ---
 name: prj-review
-description: "프로젝트 리뷰 메타 허브. 16개 lane(plan-adherence, adversarial, full-audit, hallucination, scope-creep, spec-drift, failure-mode, observability, perf-cost, breaking-change, coupling, dep-health, test-strength, dx-onboarding, harness-meta, waste-yield) 중 사용자 발화·cadence·인자에 맞춰 1개 이상 lane을 라우팅 실행. 산출물은 공통 finding 스키마로 통일되어 dharness-project/dharness-rating/review/{lane}/{date}.md에 박제. 트리거: '프로젝트 리뷰', '코드베이스 감사', '아키텍처 점검', '/prj-review', '/prj-after-task', '/prj-after-feature', '/prj-architecture', 'task 끝났으니 리뷰', '기능 통합 리뷰', '전체 점검'. should-NOT 트리거: 단일 diff/PR 라인 리뷰(=/code-review·/review 영역), 보안 단독(=/security-review), 빌드 검증(=/verify), 단일 함수 디버깅."
+description: "프로젝트 리뷰 메타 허브. 16개 lane(plan-adherence, adversarial, full-audit, hallucination, scope-creep, spec-drift, failure-mode, observability, perf-cost, breaking-change, coupling, dep-health, test-strength, dx-onboarding, harness-meta, waste-yield) 중 사용자 발화·cadence·인자에 맞춰 1개 이상 lane을 라우팅 실행. 산출물은 공통 finding 스키마로 통일되어 {review_out}/{lane}/{date}.md에 박제. 트리거: '프로젝트 리뷰', '코드베이스 감사', '아키텍처 점검', '/prj-review', '/prj-after-task', '/prj-after-feature', '/prj-architecture', 'task 끝났으니 리뷰', '기능 통합 리뷰', '전체 점검'. should-NOT 트리거: 'PR 리뷰' (=/code-review·/review 영역), 'diff 리뷰' (=/code-review), 'PR 코멘트' (=caveman:caveman-review), 단일 diff/라인 리뷰, 보안 단독 (=/security-review), 빌드 검증 (=/verify), 단일 함수 디버깅."
 ---
 
 # Project Review Hub (`prj-review`)
@@ -113,8 +113,22 @@ finding:
 
 ## 4. 산출물 박제 위치
 
+### 4.1 경로 결정 doctrine (runtime resolve, 우선순위 high → low)
+
+| 우선순위 | 조건 | resolved `{review_out}` |
+|----|----|----|
+| 1 | env `PRJ_REVIEW_OUT` 박제됨 | `$PRJ_REVIEW_OUT` |
+| 2 | `<repo-root>/.review-out/` 디렉토리 존재 | `<repo-root>/.review-out` |
+| 3 | dharness 환경 감지 — `<repo-root>/dharness-project/dharness-rating/` 디렉토리 존재 | `dharness-project/dharness-rating/review` (legacy 호환) |
+| 4 | 위 모두 미해당 (default) | `<cwd>/.review` |
+
+본 plugin은 **dharness 의존 0** — 우선순위 3 = 통합 환경 호환 opt-in. dharness 부재도 정상 동작.
+lane SKILL.md 의 출력 박제 §에서 `{review_out}` placeholder = 본 doctrine 결과로 치환.
+
+### 4.2 디렉토리 구조
+
 ```
-dharness-project/dharness-rating/review/
+{review_out}/
 ├── {YYYY-MM-DD}_{run-slug}/
 │   ├── _hub_summary.md            # hub가 작성
 │   ├── L01_plan-adherence.md      # lane별 산출물
@@ -123,7 +137,7 @@ dharness-project/dharness-rating/review/
 └── _index.md                      # 누적 인덱스 (hub append)
 ```
 
-- `dharness-project/dharness-rating/` 디렉토리 미존재 시 → hub가 생성 + `.gitkeep` 박제
+- `{review_out}` 디렉토리 미존재 시 → hub가 생성 + `.gitkeep` 박제
 - `run-slug` = cadence 또는 lane 첫 글자 (e.g. `after-task`, `arch-L8L11L15`)
 - `_hub_summary.md` 포맷:
   ```yaml
@@ -203,7 +217,7 @@ review lane은 **읽기 전용 + dharness-rating 디렉토리 쓰기**만 허용
 3. lane 실행 timeout: 기본 lane 당 10분, 사용자 조정 가능
 
 ### Phase 3: 산출물 통합
-1. lane 산출물을 `dharness-project/dharness-rating/review/{date}_{slug}/` 디렉토리에 박제
+1. lane 산출물을 `{review_out}/{date}_{slug}/` 디렉토리에 박제
 2. `_hub_summary.md` 생성: 통계·blocker·next-action
 3. `_index.md` append: `{date} | {slug} | {lanes} | {findings_total} | {top_severity}`
 4. 사용자에 caveman 요약 출력 (전체 리스트 X, blocker·next-action·산출물 경로)
@@ -240,7 +254,7 @@ architecture
 # hub
 → lanes=[L08, L11, L15]
 → 병렬 실행
-→ 산출물: dharness-project/dharness-rating/review/2026-05-28_architecture/
+→ 산출물: {review_out}/2026-05-28_architecture/
   _hub_summary.md
   L08_observability.md
   L11_coupling.md

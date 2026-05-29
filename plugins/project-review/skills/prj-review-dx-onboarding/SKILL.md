@@ -22,7 +22,10 @@ description: "신규 개발자·운영자가 N분 내 setup·실행 가능한지
 ## Procedure
 1. **README 첫 5분 시나리오 시뮬레이션**
    - "clone → install → run" 명령 enum
-   - 각 명령 실제 실행 가능 여부 (가능 시 sandbox에서)
+   - 각 명령 실제 실행 가능 여부 — 다음 우선순위로 시도:
+     1. devcontainer/Docker (`devcontainer.json` 또는 `Dockerfile` 존재 시) — 격리 실행
+     2. CI 워크플로 reuse (`.github/workflows/*.yml` 의 setup step 그대로 호출)
+     3. 가용 환경 부재 시 **정적 분석만** (명령 존재 여부 grep, package.json/Makefile target 매칭) + finding에 `[static-only]` 태그
    - 출력 메시지 친화도
 2. **prereq 점검**
    - 필요 도구 버전 명시? (node v?, python v?, docker?)
@@ -66,7 +69,7 @@ finding:
 ```
 
 ## 출력 박제
-`dharness-project/dharness-rating/review/{date}_{slug}/L14_dx-onboarding.md`
+`{review_out}/{date}_{slug}/L14_dx-onboarding.md`
 
 frontmatter:
 ```yaml

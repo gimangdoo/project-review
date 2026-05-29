@@ -7,6 +7,12 @@ description: "사전 계획 대비 진행도 + 작업 내부의 do/don't 박제 
 
 사전 계획·도덕(do/don't)을 작업이 얼마나 충실히 따랐는지 평가.
 
+## L06(spec-drift) 와의 경계
+- **L01 (본 lane)** = plan/roadmap/intent_profile.workflow 의 **행동 enum** (해야 할/하지 말 것) vs 실제 실행 (전향)
+- **L06** = README·CLAUDE.md·주석·docstring 의 **사실 진술** vs 실제 코드 사실 (후향)
+- **intent_profile.md 우선권 = L01** (행동 enum 박제처). L06은 README·CLAUDE.md·코드 주석·docstring 한정으로 좁힘
+- 두 lane 동시 활성 시: 동일 source(intent_profile) 동일 finding 중복 회피 — L01 이 emit 한 finding은 L06 에서 skip
+
 ## When to invoke
 - task 종료 직후 (`after-task` cadence 의 plan 파일 존재 시)
 - feature 완성 직후 (`after-feature`)
@@ -65,7 +71,7 @@ finding:
 ```
 
 ## 출력 박제
-`dharness-project/dharness-rating/review/{date}_{slug}/L01_plan-adherence.md`
+`{review_out}/{date}_{slug}/L01_plan-adherence.md`
 
 상단 frontmatter:
 ```yaml

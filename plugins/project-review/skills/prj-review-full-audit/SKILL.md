@@ -84,7 +84,7 @@ finding:
 ```
 
 ## 출력 박제
-`dharness-project/dharness-rating/review/{date}_{slug}/L03_full-audit.md`
+`{review_out}/{date}_{slug}/L03_full-audit.md`
 
 frontmatter:
 ```yaml

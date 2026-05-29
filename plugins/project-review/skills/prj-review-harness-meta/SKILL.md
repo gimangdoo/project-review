@@ -6,8 +6,10 @@ description: "dharness/agent/skill 정의 자체의 정합성 점검 — danglin
 # Harness Meta Lane (L15)
 
 코드 아닌 **하네스 자체** 감사. dharness 사용 환경 특화. 기존 `/harness:harness-audit` 와 책임 분담:
-- harness-audit: LLM 점검 (책임 중복·트리거·통신 프로토콜)
-- 본 lane: 결정적 / 사실 기반 (참조 깨짐·중복 정의·stale 박제)
+- `/harness:harness-audit` = **LLM 점검** (의미·도덕 정합: 책임 중복·트리거 모호·통신 프로토콜 일관성)
+- 본 lane = **결정적 점검** (파일 존재·링크 정합·invocation 카운트·timestamp 비교·grep 매칭)
+
+두 lane은 **동시 실행이 권장 패턴** — `/harness:harness-audit` 가 의미 drift를, 본 lane이 사실 drift를 잡아 상호 보완. 충돌 시 본 lane 결과(결정적 사실)가 우선.
 
 ## When to invoke
 - architecture cadence
@@ -60,24 +62,24 @@ finding:
   id: L15-001
   lane: harness-meta
   severity: high
-  location: MEMORY.md → [[project_dharness_progress]]
-  problem: dangling — project_dharness_progress.md 파일 부재 (실제 파일은 project_dharness_progress.md 가 아닌 project_dharness_progress.md 동일... 검증 필요)
+  location: MEMORY.md L7 → [[old_project_notes]]
+  problem: dangling [[link]] — memory/old_project_notes.md 파일 부재
   evidence: |
-    MEMORY.md L1: [[project_dharness_progress]]
-    grep: project_dharness_progress.md 부재 (실제 파일명 차이 있음)
+    MEMORY.md L7: "- [[old_project_notes]] — 초기 메모"
+    ls memory/: old_project_notes.md 부재 (rename → current_project_notes.md 추정)
   why_it_matters: 메모리 recall 실패 → 컨텍스트 누락 → 잘못된 의사결정
   fix:
     type: harness
     suggestion: |
-      1. 실제 파일명 확인
-      2. MEMORY.md 링크 수정 또는 파일 rename
-      3. /harness:harness-audit 후속 호출
-  confidence: 90
+      1. memory/ 디렉토리에서 유사 파일명 grep
+      2. MEMORY.md 링크를 실제 파일명으로 치환 (또는 파일 rename)
+      3. /harness:harness-audit 후속 호출로 추가 dangling 확인
+  confidence: 95
   tags: [dangling, memory]
 ```
 
 ## 출력 박제
-`dharness-project/dharness-rating/review/{date}_{slug}/L15_harness-meta.md`
+`{review_out}/{date}_{slug}/L15_harness-meta.md`
 
 frontmatter:
 ```yaml

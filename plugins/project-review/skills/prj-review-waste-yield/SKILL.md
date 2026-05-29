@@ -70,7 +70,7 @@ finding:
 ```
 
 ## 출력 박제
-`dharness-project/dharness-rating/review/{date}_{slug}/L16_waste-yield.md`
+`{review_out}/{date}_{slug}/L16_waste-yield.md`
 
 frontmatter:
 ```yaml

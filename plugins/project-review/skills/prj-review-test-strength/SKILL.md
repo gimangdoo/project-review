@@ -73,7 +73,7 @@ finding:
 ```
 
 ## 출력 박제
-`dharness-project/dharness-rating/review/{date}_{slug}/L13_test-strength.md`
+`{review_out}/{date}_{slug}/L13_test-strength.md`
 
 frontmatter:
 ```yaml
